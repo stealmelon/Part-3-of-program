@@ -1,0 +1,92 @@
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <iomanip>
+
+using namespace std;
+
+bool cmp(int a, int b)
+{
+	return a>b;
+}
+struct Competitors{
+    char Number[3];
+    char Name[8];
+    char Sex[6];
+    int Class;
+    char QQnumber[11];
+    float Avgscore;
+}Competitors[5];
+struct Referees{
+    char Name[8];
+    float Score[5];
+}Referees[7];
+
+int main()
+{
+    ifstream Competitor("E:/competitor.txt");
+    ifstream Referee("E:/referee.txt");
+    ofstream Result("E:/result.txt");
+
+    if(Referee.is_open())
+    {   
+        cout << "Succeeded!" << endl;
+        for(int i = 0; i < 7; i++)
+        {
+            Referee >> Referees[i].Name;
+            for(int j = 0; j < 5; j++)
+            {
+                Referee >> Referees[i].Score[j];
+            }
+        }
+        int score[7];
+        float sum = 0;
+        for(int i = 0; i < 5; i++)
+        {
+        	for(int j = 0; j < 7; j++)
+        	{
+        	    score[j] = Referees[j].Score[i];		
+			}
+			sort(score, score + 7, cmp);
+			for(int k = 1; k < 6; k++)
+        	{  
+        		sum += score[k];
+			}
+			Competitors[i].Avgscore = sum / 5;
+			sum = 0;
+		}
+        Referee.close();
+    }
+    if(Competitor.is_open())
+    {
+        cout << "Also Succeeded!" << endl;
+        for(int i = 0; i < 5; i++)
+        {	
+            Competitor >> Competitors[i].Number
+			           >> Competitors[i].Name
+                       >> Competitors[i].Sex
+                       >> Competitors[i].Class
+                       >> Competitors[i].QQnumber;
+        }   
+        Competitor.close();
+    }
+    if(Result.is_open())
+    {
+    	/*float* a[5];
+    	a->Competitors[0].Avgscore;
+    	sort(a, a + 5, cmp);*/
+        for(int i = 0; i < 5; i++)
+        {
+            Result  << setw(8) << Competitors[i].Number << " "
+			        << setw(8) << Competitors[i].Name <<" "
+                    << setw(8) << Competitors[i].Sex <<" "
+                    << setw(3) << Competitors[i].Class <<" "
+                    << setw(13) << Competitors[i].QQnumber <<" "
+		            << setw(8) << Competitors[i].Avgscore <<" "
+			        << endl;	
+		}
+        Result.close();
+    }
+    //system("pause");
+    return 0;
+}
